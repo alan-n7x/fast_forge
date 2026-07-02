@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "fast_forge"
+version = "0.1.0"
+description = "CLI scaffolding generator for FastAPI Clean Architecture modules"
+requires-python = ">=3.12"
+
+[project.scripts]
+forge = "forge.cli:main"

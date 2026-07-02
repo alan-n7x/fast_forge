@@ -1,0 +1,38 @@
+"""
+Command: startmodule — generates a new Clean Architecture module.
+"""
+
+import sys
+
+from forge.generator import create_module
+
+
+def execute(args: list[str]) -> None:
+    """
+    Run the startmodule command.
+
+    Usage: python manage.py startmodule <module_name>
+    """
+    if not args:
+        print("Usage: python manage.py startmodule <module_name>")
+        sys.exit(1)
+
+    module_name = args[0].lower().replace(" ", "_").replace("-", "_")
+
+    if not module_name.isidentifier():
+        print(f"Error: '{module_name}' is not a valid Python identifier.")
+        sys.exit(1)
+
+    try:
+        path = create_module(module_name)
+        print(f"Module '{module_name}' created at {path}")
+        print("")
+        print("Next steps:")
+        print(f"  1. Implement domain entities in {path / 'domain/entities.py'}")
+        print(f"  2. Implement repository interface in {path / 'domain/repository.py'}")
+        print(f"  3. Implement use cases in {path / 'application/use_cases/'}")
+        print(f"  4. Implement API endpoints in {path / 'presentation/router.py'}")
+        print(f"  5. Write tests in {path / 'tests/'}")
+    except FileExistsError as exc:
+        print(f"Error: {exc}")
+        sys.exit(1)
