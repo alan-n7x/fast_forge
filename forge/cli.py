@@ -8,11 +8,12 @@ Usage:
 
 import sys
 
-from forge.commands import startmodule
+from forge.commands import removemodule, startmodule
 
 
 COMMANDS = {
     "startmodule": startmodule.execute,
+    "removemodule": removemodule.execute,
 }
 
 
@@ -20,7 +21,11 @@ def main() -> None:
     """Main CLI dispatcher."""
     args = sys.argv[1:]
 
-    if not args or args[0] in ("--help", "-h"):
+    if not args:
+        _print_help()
+        return
+
+    if args[0] in ("--help", "-h", "help"):
         _print_help()
         return
 
@@ -42,7 +47,8 @@ def _print_help() -> None:
     print("  python manage.py <command> [options]")
     print("")
     print("Commands:")
-    print("  startmodule <name>   Generate a new Clean Architecture module")
+    print("  startmodule  <name>   Generate a new Clean Architecture module")
+    print("  removemodule <name>   Remove an existing module")
     print("")
 
 

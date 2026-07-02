@@ -13,8 +13,16 @@ def execute(args: list[str]) -> None:
 
     Usage: python manage.py startmodule <module_name>
     """
-    if not args:
+    if not args or args[0] in ("--help", "-h"):
         print("Usage: python manage.py startmodule <module_name>")
+        print("")
+        print("Generate a new Clean Architecture module.")
+        print("")
+        print("Arguments:")
+        print("  <module_name>   Module name (e.g., telegram, offer_management)")
+        print("")
+        print("Example:")
+        print("  python manage.py startmodule notifications")
         sys.exit(1)
 
     module_name = args[0].lower().replace(" ", "_").replace("-", "_")
