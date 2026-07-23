@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-fast_forge — CLI scaffolding generator for FastAPI Clean Architecture modules.
+"""fast_forge — CLI scaffolding generator for FastAPI Clean Architecture modules.
 
 Usage:
     python manage.py startmodule <module_name>
@@ -9,6 +8,7 @@ Examples:
     python manage.py startmodule telegram
     python manage.py startmodule offers
     python manage.py startmodule notifications
+
 """
 
 import sys

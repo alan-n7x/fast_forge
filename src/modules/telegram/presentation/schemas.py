@@ -1,6 +1,4 @@
-"""
-Pydantic schemas for telegram module.
-"""
+"""Pydantic schemas for telegram module."""
 
 from datetime import datetime
 from uuid import UUID

@@ -1,3 +1,1 @@
-"""
-telegram module.
-"""
+"""telegram module."""

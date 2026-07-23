@@ -1,14 +1,11 @@
-"""
-Value objects for {module_name} module.
-"""
+"""Value objects for {module_name} module."""
 
 from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
 class {entity_name}Status:
-    """
-    Immutable value object representing a {entity_name} status.
+    """Immutable value object representing a {entity_name} status.
 
     Value objects are defined by their attributes and have no identity.
     They should be immutable.

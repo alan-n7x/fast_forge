@@ -1,6 +1,4 @@
-"""
-Tests for the {module_name} use cases.
-"""
+"""Tests for the {module_name} use cases."""
 
 import pytest
 

@@ -1,6 +1,4 @@
-"""
-Data transfer objects for telegram module.
-"""
+"""Data transfer objects for telegram module."""
 
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4

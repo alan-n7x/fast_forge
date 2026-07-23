@@ -1,6 +1,4 @@
-"""
-Pydantic schemas for {module_name} module.
-"""
+"""Pydantic schemas for {module_name} module."""
 
 from datetime import datetime
 from uuid import UUID

@@ -1,6 +1,4 @@
-"""
-Dependencies for {module_name} module.
-"""
+"""Dependencies for {module_name} module."""
 
 from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING
@@ -12,11 +10,11 @@ if TYPE_CHECKING:
 
 
 async def get_repository() -> AsyncGenerator["Fake{entity_name}Repository", None]:
-    """
-    Provide repository instance for the {module_name} module.
+    """Provide repository instance for the {module_name} module.
 
     Yields:
         A repository instance scoped to the request.
+
     """
     # TODO: Replace with actual repository implementation (e.g., SQLAlchemy)
     from modules.{module_name}.infrastructure.repositories.fake_repository import (

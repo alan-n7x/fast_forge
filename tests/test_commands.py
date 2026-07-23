@@ -1,3 +1,5 @@
+"""Test module lifecycle command implementations."""
+
 from pathlib import Path
 
 import pytest
@@ -8,6 +10,7 @@ from forge.generator import create_module
 def test_removemodule_removes_module_and_registration(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """Verify that removemodule deletes files and router registration."""
     monkeypatch.chdir(tmp_path)
     module_path = create_module("orders")
     monkeypatch.setattr("builtins.input", lambda _prompt: "y")
@@ -22,6 +25,7 @@ def test_removemodule_removes_module_and_registration(
 def test_removemodule_cancel_preserves_module(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    """Verify that declining confirmation preserves the module."""
     monkeypatch.chdir(tmp_path)
     module_path = create_module("orders")
     monkeypatch.setattr("builtins.input", lambda _prompt: "n")
@@ -38,6 +42,7 @@ def test_removemodule_rejects_parent_directory(
     capsys: pytest.CaptureFixture[str],
     args: list[str],
 ) -> None:
+    """Verify that removal cannot escape the modules directory."""
     monkeypatch.chdir(tmp_path)
     modules_dir = tmp_path / "src" / "modules"
     modules_dir.mkdir(parents=True)
@@ -57,6 +62,7 @@ def test_removemodule_dry_run_preserves_files_without_prompt(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    """Verify that removal dry-run neither prompts nor changes files."""
     monkeypatch.chdir(tmp_path)
     module_path = create_module("orders")
 
@@ -77,6 +83,7 @@ def test_removemodule_force_skips_prompt(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
+    """Verify that force removal skips only the confirmation prompt."""
     monkeypatch.chdir(tmp_path)
     module_path = create_module("orders")
 

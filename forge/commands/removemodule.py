@@ -1,6 +1,4 @@
-"""
-Command: removemodule — removes a Clean Architecture module.
-"""
+"""Command: removemodule — removes a Clean Architecture module."""
 
 import argparse
 import shutil
@@ -29,8 +27,7 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def execute(args: list[str]) -> None:
-    """
-    Run the removemodule command.
+    """Run the removemodule command.
 
     Usage: python manage.py removemodule <module_name> [--dry-run] [--force]
     """
@@ -82,4 +79,4 @@ def _unregister_module(module_name: str, target_dir: str | Path = "src/modules")
         if f".{module_name}." not in line and f"include_router({module_name}_router)" not in line
     ]
 
-    modules_init.write_text("".join(filtered), encoding="utf-8")
+    modules_init.write_text("".join(filtered), encoding="utf-8", newline="\n")
