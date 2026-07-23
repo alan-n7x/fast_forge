@@ -29,6 +29,15 @@ forge = "forge.cli:main"
 [tool.setuptools.packages.find]
 include = ["forge*"]
 
+[tool.setuptools.package-data]
+forge = [
+    "template_files/*.tpl",
+    "template_files/*/*.tpl",
+    "template_files/*/*/*.tpl",
+    "template_files/*/*/*/*.tpl",
+    "template_files/*/*/*/*/*.tpl",
+]
+
 [tool.pytest.ini_options]
 addopts = "--cov=forge --cov-report=term-missing --cov-fail-under=80"
 asyncio_mode = "auto"
