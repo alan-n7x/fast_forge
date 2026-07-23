@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from forge.generator import create_module, resolve_module_path, to_pascal_case
+from forge.generator import create_module, plan_module, resolve_module_path, to_pascal_case
 
 
 def test_to_pascal_case() -> None:
@@ -34,6 +34,15 @@ def test_create_module_rejects_duplicate(tmp_path: Path) -> None:
 
     with pytest.raises(FileExistsError):
         create_module("orders", target_dir)
+
+
+def test_plan_module_validates_without_creating_files(tmp_path: Path) -> None:
+    target_dir = tmp_path / "src" / "modules"
+
+    module_path = plan_module("order-items", target_dir)
+
+    assert module_path == (target_dir / "order_items").resolve()
+    assert not target_dir.exists()
 
 
 @pytest.mark.parametrize("module_name", ["", "..", "../outside", "class", "orders/items"])

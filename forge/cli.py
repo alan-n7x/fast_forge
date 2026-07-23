@@ -46,8 +46,8 @@ def _print_help() -> None:
     print("  python manage.py <command> [options]")
     print("")
     print("Commands:")
-    print("  startmodule  <name>   Generate a new Clean Architecture module")
-    print("  removemodule <name>   Remove an existing module")
+    print("  startmodule  <name> [--dry-run]          Generate a module")
+    print("  removemodule <name> [--dry-run|--force]  Remove a module")
     print("")
 
 
