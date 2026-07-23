@@ -2,32 +2,46 @@
 Command: startmodule — generates a new Clean Architecture module.
 """
 
-import sys
+import argparse
 
-from forge.generator import create_module, normalize_module_name
+from forge.generator import create_module, normalize_module_name, plan_module
+
+
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        prog="forge startmodule",
+        description="Generate a new Clean Architecture module.",
+    )
+    parser.add_argument("module_name", help="Module name, such as notifications")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate and show the target without creating files",
+    )
+    return parser
 
 
 def execute(args: list[str]) -> None:
     """
     Run the startmodule command.
 
-    Usage: python manage.py startmodule <module_name>
+    Usage: python manage.py startmodule <module_name> [--dry-run]
     """
-    if not args or args[0] in ("--help", "-h"):
-        print("Usage: python manage.py startmodule <module_name>")
-        print("")
-        print("Generate a new Clean Architecture module.")
-        print("")
-        print("Arguments:")
-        print("  <module_name>   Module name (e.g., telegram, offer_management)")
-        print("")
-        print("Example:")
-        print("  python manage.py startmodule notifications")
-        sys.exit(1)
+    parser = _parser()
+    if not args:
+        parser.print_help()
+        raise SystemExit(1)
 
-    module_name = normalize_module_name(args[0])
+    parsed = parser.parse_args(args)
+    module_name = normalize_module_name(parsed.module_name)
 
     try:
+        if parsed.dry_run:
+            path = plan_module(module_name)
+            print(f"Dry run: module '{module_name}' would be created at {path}")
+            print(f"Dry run: router would be registered in {path.parent / '__init__.py'}")
+            return
+
         path = create_module(module_name)
         print(f"Module '{module_name}' created at {path}")
         print("")
@@ -39,4 +53,4 @@ def execute(args: list[str]) -> None:
         print(f"  5. Write tests in {path / 'tests/'}")
     except (FileExistsError, ValueError) as exc:
         print(f"Error: {exc}")
-        sys.exit(1)
+        raise SystemExit(1) from exc

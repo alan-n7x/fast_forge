@@ -52,7 +52,7 @@ def create_module(module_name: str, target_dir: str | Path = "src/modules") -> P
         FileExistsError: If the module directory already exists.
     """
     module_name = validate_module_name(module_name)
-    module_path = resolve_module_path(module_name, target_dir)
+    module_path = plan_module(module_name, target_dir)
     entity_name = to_pascal_case(module_name)
     context = {
         "module_name": module_name,
@@ -67,6 +67,15 @@ def create_module(module_name: str, target_dir: str | Path = "src/modules") -> P
     _create_structure(module_path, context)
     _register_module(module_name, target_dir)
 
+    return module_path
+
+
+def plan_module(module_name: str, target_dir: str | Path = "src/modules") -> Path:
+    """Validate a module creation without writing to the filesystem."""
+    module_name = validate_module_name(module_name)
+    module_path = resolve_module_path(module_name, target_dir)
+    if module_path.exists():
+        raise FileExistsError(f"Module '{module_name}' already exists at {module_path}")
     return module_path
 
 

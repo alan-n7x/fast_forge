@@ -17,6 +17,19 @@ pip install -e ".[dev]"
 | `python manage.py startmodule <nome>` | Gera um novo módulo |
 | `python manage.py removemodule <nome>` | Remove um módulo |
 
+### Opções seguras
+
+```bash
+# Valida e mostra o destino sem criar arquivos
+python manage.py startmodule notifications --dry-run
+
+# Mostra o que seria removido sem alterar arquivos
+python manage.py removemodule notifications --dry-run
+
+# Remove sem confirmação interativa, mantendo todas as validações de segurança
+python manage.py removemodule notifications --force
+```
+
 ## Exemplo
 
 ```bash
