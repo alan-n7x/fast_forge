@@ -39,11 +39,25 @@ O router é registrado automaticamente em `src/modules/__init__.py`.
 
 ```python
 from fastapi import FastAPI
-from src.modules import main_router
+from modules import main_router
 
 app = FastAPI()
 app.include_router(main_router)
 ```
+
+## Desenvolvimento
+
+Requer [uv](https://docs.astral.sh/uv/) e Python 3.12 ou superior.
+
+```bash
+uv sync
+uv run ruff format --check .
+uv run ruff check .
+uv run mypy
+uv run pytest
+```
+
+O `pytest` exige cobertura mínima de 80% do pacote `forge`.
 
 ## Gerado pela primeira vez
 

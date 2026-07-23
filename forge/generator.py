@@ -2,29 +2,34 @@
 Module generator — scaffolds Clean Architecture modules for FastAPI.
 """
 
+import keyword
 from pathlib import Path
+from typing import Any
 
-from forge.templates import (
-    DOMAIN_ENTITIES,
-    DOMAIN_EXCEPTIONS,
-    DOMAIN_REPOSITORY,
-    DOMAIN_VALUE_OBJECTS,
-    DTO,
-    DEPENDENCIES,
-    FAKE_REPOSITORY,
-    HTTPS_GATEWAY,
-    INFRASTRUCTURE_SETTINGS,
-    MODULE_INIT,
-    MODULE_README,
-    ROUTER,
-    SCHEMAS,
-    SERVICES,
-    TEST_GATEWAY,
-    TEST_ROUTER,
-    TEST_USE_CASES,
-    USE_CASE,
-    USE_CASE_INIT,
-)
+from forge.templates import render_template
+
+
+def normalize_module_name(name: str) -> str:
+    """Normalize a user-provided module name."""
+    return name.strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def validate_module_name(name: str) -> str:
+    """Return a safe Python module name or raise ``ValueError``."""
+    normalized_name = normalize_module_name(name)
+    if not normalized_name.isidentifier() or keyword.iskeyword(normalized_name):
+        raise ValueError(f"'{normalized_name}' is not a valid Python module name.")
+    return normalized_name
+
+
+def resolve_module_path(module_name: str, target_dir: str | Path) -> Path:
+    """Resolve a module path and guarantee it is a direct child of target_dir."""
+    safe_name = validate_module_name(module_name)
+    target_path = Path(target_dir).resolve()
+    module_path = (target_path / safe_name).resolve()
+    if module_path.parent != target_path:
+        raise ValueError(f"Module path escapes target directory: {module_path}")
+    return module_path
 
 
 def to_pascal_case(name: str) -> str:
@@ -32,7 +37,7 @@ def to_pascal_case(name: str) -> str:
     return "".join(word.capitalize() for word in name.replace("-", "_").split("_"))
 
 
-def create_module(module_name: str, target_dir: str = "src/modules") -> Path:
+def create_module(module_name: str, target_dir: str | Path = "src/modules") -> Path:
     """
     Generate a full Clean Architecture module.
 
@@ -46,7 +51,8 @@ def create_module(module_name: str, target_dir: str = "src/modules") -> Path:
     Raises:
         FileExistsError: If the module directory already exists.
     """
-    module_path = Path(target_dir) / module_name
+    module_name = validate_module_name(module_name)
+    module_path = resolve_module_path(module_name, target_dir)
     entity_name = to_pascal_case(module_name)
     context = {
         "module_name": module_name,
@@ -64,64 +70,63 @@ def create_module(module_name: str, target_dir: str = "src/modules") -> Path:
     return module_path
 
 
-def _create_structure(base_path: Path, context: dict) -> None:
+def _create_structure(base_path: Path, context: dict[str, Any]) -> None:
     """Create the directory tree and write template files."""
-    structure = [
+    structure: list[tuple[str, str | None]] = [
         # Module root
-        ("__init__.py", MODULE_INIT),
-        ("README.md", MODULE_README),
+        ("__init__.py", "module/__init__.py.tpl"),
+        ("README.md", "module/README.md.tpl"),
         # Presentation layer
-        ("presentation/__init__.py", ""),
-        ("presentation/router.py", ROUTER),
-        ("presentation/schemas.py", SCHEMAS),
-        ("presentation/dependencies.py", DEPENDENCIES),
+        ("presentation/__init__.py", None),
+        ("presentation/router.py", "module/presentation/router.py.tpl"),
+        ("presentation/schemas.py", "module/presentation/schemas.py.tpl"),
+        ("presentation/dependencies.py", "module/presentation/dependencies.py.tpl"),
         # Application layer
-        ("application/__init__.py", ""),
-        ("application/dto.py", DTO),
-        ("application/services.py", SERVICES),
-        ("application/use_cases/__init__.py", USE_CASE_INIT),
+        ("application/__init__.py", None),
+        ("application/dto.py", "module/application/dto.py.tpl"),
+        ("application/services.py", "module/application/services.py.tpl"),
+        (
+            "application/use_cases/__init__.py",
+            "module/application/use_cases/__init__.py.tpl",
+        ),
         (
             f"application/use_cases/create_{context['module_name']}_use_case.py",
-            USE_CASE,
+            "module/application/use_cases/create_use_case.py.tpl",
         ),
         # Domain layer
-        ("domain/__init__.py", ""),
-        ("domain/entities.py", DOMAIN_ENTITIES),
-        ("domain/repository.py", DOMAIN_REPOSITORY),
-        ("domain/exceptions.py", DOMAIN_EXCEPTIONS),
-        ("domain/value_objects.py", DOMAIN_VALUE_OBJECTS),
+        ("domain/__init__.py", None),
+        ("domain/entities.py", "module/domain/entities.py.tpl"),
+        ("domain/repository.py", "module/domain/repository.py.tpl"),
+        ("domain/exceptions.py", "module/domain/exceptions.py.tpl"),
+        ("domain/value_objects.py", "module/domain/value_objects.py.tpl"),
         # Infrastructure layer
-        ("infrastructure/__init__.py", ""),
-        ("infrastructure/settings.py", INFRASTRUCTURE_SETTINGS),
-        ("infrastructure/repositories/__init__.py", ""),
+        ("infrastructure/__init__.py", None),
+        ("infrastructure/settings.py", "module/infrastructure/settings.py.tpl"),
+        ("infrastructure/repositories/__init__.py", None),
         (
             "infrastructure/repositories/fake_repository.py",
-            FAKE_REPOSITORY,
+            "module/infrastructure/repositories/fake_repository.py.tpl",
         ),
-        ("infrastructure/gateways/__init__.py", ""),
-        ("infrastructure/gateways/httpx_gateway.py", HTTPS_GATEWAY),
+        ("infrastructure/gateways/__init__.py", None),
+        (
+            "infrastructure/gateways/httpx_gateway.py",
+            "module/infrastructure/gateways/httpx_gateway.py.tpl",
+        ),
         # Tests
-        ("tests/__init__.py", ""),
-        ("tests/test_router.py", TEST_ROUTER),
-        ("tests/test_use_cases.py", TEST_USE_CASES),
-        ("tests/test_gateway.py", TEST_GATEWAY),
+        ("tests/__init__.py", None),
+        ("tests/test_router.py", "module/tests/test_router.py.tpl"),
+        ("tests/test_use_cases.py", "module/tests/test_use_cases.py.tpl"),
+        ("tests/test_gateway.py", "module/tests/test_gateway.py.tpl"),
     ]
 
-    for relative_path, template in structure:
+    for relative_path, template_name in structure:
         file_path = base_path / relative_path
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        if template:
-            try:
-                content = template.format(**context)
-            except (KeyError, IndexError) as exc:
-                msg = f"Error formatting template '{relative_path}': {exc}"
-                raise RuntimeError(msg) from exc
-        else:
-            content = ""
+        content = render_template(template_name, context) if template_name else ""
         file_path.write_text(content, encoding="utf-8")
 
 
-def _register_module(module_name: str, target_dir: str) -> None:
+def _register_module(module_name: str, target_dir: str | Path) -> None:
     """
     Auto-register the module's router in the project's main router.
 

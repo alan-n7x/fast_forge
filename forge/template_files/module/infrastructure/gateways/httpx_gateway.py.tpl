@@ -1,5 +1,5 @@
 """
-HTTP gateway for telegram module.
+HTTP gateway for {module_name} module.
 """
 
 from collections.abc import AsyncGenerator
@@ -9,9 +9,9 @@ from typing import Any, cast
 import httpx
 
 
-class TelegramGateway:
+class {entity_name}Gateway:
     """
-    Gateway for external HTTP APIs related to telegram.
+    Gateway for external HTTP APIs related to {module_name}.
 
     Uses httpx.AsyncClient for async HTTP communication.
     """
@@ -30,9 +30,9 @@ class TelegramGateway:
     @asynccontextmanager
     async def _client(self) -> AsyncGenerator[httpx.AsyncClient, None]:
         """Create and yield an HTTP client session."""
-        headers = {}
+        headers = {{}}
         if self._api_key:
-            headers["Authorization"] = f"Bearer {self._api_key}"
+            headers["Authorization"] = f"Bearer {{self._api_key}}"
         async with httpx.AsyncClient(base_url=self._base_url, headers=headers) as client:
             yield client
 

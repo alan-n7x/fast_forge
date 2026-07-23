@@ -1,27 +1,27 @@
 """
-In-memory fake repository for telegram module.
+In-memory fake repository for {module_name} module.
 """
 
 from uuid import uuid4
 
-from modules.telegram.domain.entities import Telegram
-from modules.telegram.domain.repository import ITelegramRepository
+from modules.{module_name}.domain.entities import {entity_name}
+from modules.{module_name}.domain.repository import I{entity_name}Repository
 
 
-class FakeTelegramRepository(ITelegramRepository):
+class Fake{entity_name}Repository(I{entity_name}Repository):
     """
-    In-memory implementation of ITelegramRepository.
+    In-memory implementation of I{entity_name}Repository.
 
     Uses a dict for storage. Useful for testing and development
     before a real database adapter is implemented.
     """
 
     def __init__(self) -> None:
-        self._storage: dict[str, Telegram] = {}
+        self._storage: dict[str, {entity_name}] = {{}}
 
-    async def save(self, entity: Telegram) -> Telegram:
+    async def save(self, entity: {entity_name}) -> {entity_name}:
         """
-        Persist a Telegram in memory.
+        Persist a {entity_name} in memory.
 
         Args:
             entity: The entity to store.
@@ -34,9 +34,9 @@ class FakeTelegramRepository(ITelegramRepository):
         self._storage[str(entity.id)] = entity
         return entity
 
-    async def find_by_id(self, entity_id: str) -> Telegram | None:
+    async def find_by_id(self, entity_id: str) -> {entity_name} | None:
         """
-        Find a Telegram by ID.
+        Find a {entity_name} by ID.
 
         Args:
             entity_id: UUID string.
@@ -46,7 +46,7 @@ class FakeTelegramRepository(ITelegramRepository):
         """
         return self._storage.get(entity_id)
 
-    async def find_all(self) -> list[Telegram]:
+    async def find_all(self) -> list[{entity_name}]:
         """
         Return all stored entities.
 

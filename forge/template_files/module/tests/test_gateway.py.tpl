@@ -1,5 +1,5 @@
 """
-Tests for the telegram gateway.
+Tests for the {module_name} gateway.
 """
 
 # TODO: Implement gateway tests

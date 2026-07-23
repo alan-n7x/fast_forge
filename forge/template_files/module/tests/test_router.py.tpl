@@ -1,5 +1,5 @@
 """
-Tests for the telegram router.
+Tests for the {module_name} router.
 """
 
 from collections.abc import AsyncGenerator
@@ -8,12 +8,12 @@ import pytest
 from fastapi import FastAPI
 from httpx import ASGITransport, AsyncClient
 
-from modules.telegram.presentation.router import router
+from modules.{module_name}.presentation.router import router
 
 
 @pytest.fixture
 def app() -> FastAPI:
-    """Create a test app with the telegram router."""
+    """Create a test app with the {module_name} router."""
     application = FastAPI()
     application.include_router(router)
     return application
@@ -30,8 +30,8 @@ async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
 @pytest.mark.asyncio
 async def test_health_endpoint(client: AsyncClient) -> None:
     """Test the health check endpoint returns OK."""
-    response = await client.get("/telegram/health")
+    response = await client.get("/{module_name}/health")
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
-    assert data["module"] == "telegram"
+    assert data["module"] == "{module_name}"

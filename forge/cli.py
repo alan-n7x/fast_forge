@@ -10,7 +10,6 @@ import sys
 
 from forge.commands import removemodule, startmodule
 
-
 COMMANDS = {
     "startmodule": startmodule.execute,
     "removemodule": removemodule.execute,

@@ -4,11 +4,11 @@ Tests for the telegram use cases.
 
 import pytest
 
-from telegram.application.dto import CreateTelegramDTO
-from telegram.application.use_cases.create_telegram_use_case import (
+from modules.telegram.application.dto import CreateTelegramDTO
+from modules.telegram.application.use_cases.create_telegram_use_case import (
     CreateTelegramUseCase,
 )
-from telegram.infrastructure.repositories.fake_repository import (
+from modules.telegram.infrastructure.repositories.fake_repository import (
     FakeTelegramRepository,
 )
 
