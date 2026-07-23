@@ -2,10 +2,10 @@
 Application services for telegram module.
 """
 
-from telegram.application.dto import CreateTelegramDTO, TelegramDTO
-from telegram.domain.entities import Telegram
-from telegram.domain.exceptions import TelegramNotFoundError
-from telegram.domain.repository import ITelegramRepository
+from modules.telegram.application.dto import CreateTelegramDTO, TelegramDTO
+from modules.telegram.domain.entities import Telegram
+from modules.telegram.domain.exceptions import TelegramNotFoundError
+from modules.telegram.domain.repository import ITelegramRepository
 
 
 class TelegramService:

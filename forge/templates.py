@@ -5,7 +5,7 @@ MODULE_INIT = '''"""
 """
 '''
 
-MODULE_README = '''# {ModuleName} Module
+MODULE_README = """# {ModuleName} Module
 
 ## Clean Architecture Structure
 
@@ -23,7 +23,7 @@ MODULE_README = '''# {ModuleName} Module
 - [ ] Implement API endpoints
 - [ ] Implement external gateways
 - [ ] Write tests
-'''
+"""
 
 ROUTER = '''"""
 Router for {module_name} module.
@@ -31,7 +31,7 @@ Router for {module_name} module.
 
 from fastapi import APIRouter
 
-from {module_name}.presentation.schemas import HealthResponse
+from modules.{module_name}.presentation.schemas import HealthResponse
 
 router = APIRouter(prefix="/{module_name}", tags=["{module_name}"])
 
@@ -53,7 +53,7 @@ Pydantic schemas for {module_name} module.
 """
 
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
@@ -115,7 +115,7 @@ from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from {module_name}.infrastructure.repositories.fake_repository import (
+    from modules.{module_name}.infrastructure.repositories.fake_repository import (
         Fake{entity_name}Repository,
     )
 
@@ -128,7 +128,7 @@ async def get_repository() -> AsyncGenerator["Fake{entity_name}Repository", None
         A repository instance scoped to the request.
     """
     # TODO: Replace with actual repository implementation (e.g., SQLAlchemy)
-    from {module_name}.infrastructure.repositories.fake_repository import (
+    from modules.{module_name}.infrastructure.repositories.fake_repository import (
         Fake{entity_name}Repository,
     )
 
@@ -169,10 +169,10 @@ SERVICES = '''"""
 Application services for {module_name} module.
 """
 
-from {module_name}.application.dto import Create{entity_name}DTO, {entity_name}DTO
-from {module_name}.domain.entities import {entity_name}
-from {module_name}.domain.exceptions import {entity_name}NotFoundError
-from {module_name}.domain.repository import I{entity_name}Repository
+from modules.{module_name}.application.dto import Create{entity_name}DTO, {entity_name}DTO
+from modules.{module_name}.domain.entities import {entity_name}
+from modules.{module_name}.domain.exceptions import {entity_name}NotFoundError
+from modules.{module_name}.domain.repository import I{entity_name}Repository
 
 
 class {entity_name}Service:
@@ -269,7 +269,7 @@ Repository interfaces for {module_name} module.
 
 from abc import ABC, abstractmethod
 
-from {module_name}.domain.entities import {entity_name}
+from modules.{module_name}.domain.entities import {entity_name}
 
 
 class I{entity_name}Repository(ABC):
@@ -411,8 +411,8 @@ In-memory fake repository for {module_name} module.
 
 from uuid import uuid4
 
-from {module_name}.domain.entities import {entity_name}
-from {module_name}.domain.repository import I{entity_name}Repository
+from modules.{module_name}.domain.entities import {entity_name}
+from modules.{module_name}.domain.repository import I{entity_name}Repository
 
 
 class Fake{entity_name}Repository(I{entity_name}Repository):
@@ -476,8 +476,8 @@ USE_CASE = '''"""
 Use case: {module_name} {use_case_name}.
 """
 
-from {module_name}.application.dto import Create{entity_name}DTO, {entity_name}DTO
-from {module_name}.domain.repository import I{entity_name}Repository
+from modules.{module_name}.application.dto import Create{entity_name}DTO, {entity_name}DTO
+from modules.{module_name}.domain.repository import I{entity_name}Repository
 
 
 class Create{entity_name}UseCase:
@@ -508,7 +508,7 @@ class Create{entity_name}UseCase:
             The created entity DTO.
         """
         # TODO: Add business rules, validation, and side effects
-        from {module_name}.domain.entities import {entity_name}
+        from modules.{module_name}.domain.entities import {entity_name}
 
         entity = {entity_name}(name=dto.name, description=dto.description)
         saved = await self._repository.save(entity)
@@ -525,11 +525,13 @@ TEST_ROUTER = '''"""
 Tests for the {module_name} router.
 """
 
-import pytest
-from httpx import AsyncClient, ASGITransport
-from fastapi import FastAPI
+from collections.abc import AsyncGenerator
 
-from {module_name}.presentation.router import router
+import pytest
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
+
+from modules.{module_name}.presentation.router import router
 
 
 @pytest.fixture
@@ -541,7 +543,7 @@ def app() -> FastAPI:
 
 
 @pytest.fixture
-async def client(app: FastAPI) -> AsyncClient:
+async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
     """Create an async test client."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
@@ -564,11 +566,11 @@ Tests for the {module_name} use cases.
 
 import pytest
 
-from {module_name}.application.dto import Create{entity_name}DTO
-from {module_name}.application.use_cases.create_{module_name}_use_case import (
+from modules.{module_name}.application.dto import Create{entity_name}DTO
+from modules.{module_name}.application.use_cases.create_{module_name}_use_case import (
     Create{entity_name}UseCase,
 )
-from {module_name}.infrastructure.repositories.fake_repository import (
+from modules.{module_name}.infrastructure.repositories.fake_repository import (
     Fake{entity_name}Repository,
 )
 
@@ -594,9 +596,6 @@ TEST_GATEWAY = '''"""
 Tests for the {module_name} gateway.
 """
 
-import pytest
-
-
 # TODO: Implement gateway tests
 # @pytest.mark.asyncio
 # async def test_gateway_placeholder() -> None:
@@ -610,6 +609,7 @@ HTTP gateway for {module_name} module.
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any, cast
 
 import httpx
 
@@ -641,7 +641,7 @@ class {entity_name}Gateway:
         async with httpx.AsyncClient(base_url=self._base_url, headers=headers) as client:
             yield client
 
-    async def fetch_data(self, endpoint: str) -> dict:
+    async def fetch_data(self, endpoint: str) -> dict[str, Any]:
         """
         Fetch data from an external endpoint.
 
@@ -658,5 +658,5 @@ class {entity_name}Gateway:
         async with self._client() as client:
             response = await client.get(endpoint)
             response.raise_for_status()
-            return response.json()
+            return cast(dict[str, Any], response.json())
 '''

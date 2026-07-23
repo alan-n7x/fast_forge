@@ -4,7 +4,7 @@ Repository interfaces for telegram module.
 
 from abc import ABC, abstractmethod
 
-from telegram.domain.entities import Telegram
+from modules.telegram.domain.entities import Telegram
 
 
 class ITelegramRepository(ABC):

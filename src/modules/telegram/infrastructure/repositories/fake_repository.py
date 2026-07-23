@@ -4,8 +4,8 @@ In-memory fake repository for telegram module.
 
 from uuid import uuid4
 
-from telegram.domain.entities import Telegram
-from telegram.domain.repository import ITelegramRepository
+from modules.telegram.domain.entities import Telegram
+from modules.telegram.domain.repository import ITelegramRepository
 
 
 class FakeTelegramRepository(ITelegramRepository):

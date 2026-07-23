@@ -2,11 +2,13 @@
 Tests for the telegram router.
 """
 
-import pytest
-from httpx import AsyncClient, ASGITransport
-from fastapi import FastAPI
+from collections.abc import AsyncGenerator
 
-from telegram.presentation.router import router
+import pytest
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
+
+from modules.telegram.presentation.router import router
 
 
 @pytest.fixture
@@ -18,7 +20,7 @@ def app() -> FastAPI:
 
 
 @pytest.fixture
-async def client(app: FastAPI) -> AsyncClient:
+async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
     """Create an async test client."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:

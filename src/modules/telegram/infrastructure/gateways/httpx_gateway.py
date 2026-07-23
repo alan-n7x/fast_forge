@@ -4,6 +4,7 @@ HTTP gateway for telegram module.
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
+from typing import Any, cast
 
 import httpx
 
@@ -35,7 +36,7 @@ class TelegramGateway:
         async with httpx.AsyncClient(base_url=self._base_url, headers=headers) as client:
             yield client
 
-    async def fetch_data(self, endpoint: str) -> dict:
+    async def fetch_data(self, endpoint: str) -> dict[str, Any]:
         """
         Fetch data from an external endpoint.
 
@@ -52,4 +53,4 @@ class TelegramGateway:
         async with self._client() as client:
             response = await client.get(endpoint)
             response.raise_for_status()
-            return response.json()
+            return cast(dict[str, Any], response.json())

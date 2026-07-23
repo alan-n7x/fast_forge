@@ -2,15 +2,17 @@
 Module generator — scaffolds Clean Architecture modules for FastAPI.
 """
 
+import keyword
 from pathlib import Path
+from typing import Any
 
 from forge.templates import (
+    DEPENDENCIES,
     DOMAIN_ENTITIES,
     DOMAIN_EXCEPTIONS,
     DOMAIN_REPOSITORY,
     DOMAIN_VALUE_OBJECTS,
     DTO,
-    DEPENDENCIES,
     FAKE_REPOSITORY,
     HTTPS_GATEWAY,
     INFRASTRUCTURE_SETTINGS,
@@ -27,12 +29,35 @@ from forge.templates import (
 )
 
 
+def normalize_module_name(name: str) -> str:
+    """Normalize a user-provided module name."""
+    return name.strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def validate_module_name(name: str) -> str:
+    """Return a safe Python module name or raise ``ValueError``."""
+    normalized_name = normalize_module_name(name)
+    if not normalized_name.isidentifier() or keyword.iskeyword(normalized_name):
+        raise ValueError(f"'{normalized_name}' is not a valid Python module name.")
+    return normalized_name
+
+
+def resolve_module_path(module_name: str, target_dir: str | Path) -> Path:
+    """Resolve a module path and guarantee it is a direct child of target_dir."""
+    safe_name = validate_module_name(module_name)
+    target_path = Path(target_dir).resolve()
+    module_path = (target_path / safe_name).resolve()
+    if module_path.parent != target_path:
+        raise ValueError(f"Module path escapes target directory: {module_path}")
+    return module_path
+
+
 def to_pascal_case(name: str) -> str:
     """Convert snake_case or kebab-case to PascalCase."""
     return "".join(word.capitalize() for word in name.replace("-", "_").split("_"))
 
 
-def create_module(module_name: str, target_dir: str = "src/modules") -> Path:
+def create_module(module_name: str, target_dir: str | Path = "src/modules") -> Path:
     """
     Generate a full Clean Architecture module.
 
@@ -46,7 +71,8 @@ def create_module(module_name: str, target_dir: str = "src/modules") -> Path:
     Raises:
         FileExistsError: If the module directory already exists.
     """
-    module_path = Path(target_dir) / module_name
+    module_name = validate_module_name(module_name)
+    module_path = resolve_module_path(module_name, target_dir)
     entity_name = to_pascal_case(module_name)
     context = {
         "module_name": module_name,
@@ -64,7 +90,7 @@ def create_module(module_name: str, target_dir: str = "src/modules") -> Path:
     return module_path
 
 
-def _create_structure(base_path: Path, context: dict) -> None:
+def _create_structure(base_path: Path, context: dict[str, Any]) -> None:
     """Create the directory tree and write template files."""
     structure = [
         # Module root
@@ -121,7 +147,7 @@ def _create_structure(base_path: Path, context: dict) -> None:
         file_path.write_text(content, encoding="utf-8")
 
 
-def _register_module(module_name: str, target_dir: str) -> None:
+def _register_module(module_name: str, target_dir: str | Path) -> None:
     """
     Auto-register the module's router in the project's main router.
 

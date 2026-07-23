@@ -2,8 +2,8 @@
 Use case: telegram create_telegram.
 """
 
-from telegram.application.dto import CreateTelegramDTO, TelegramDTO
-from telegram.domain.repository import ITelegramRepository
+from modules.telegram.application.dto import CreateTelegramDTO, TelegramDTO
+from modules.telegram.domain.repository import ITelegramRepository
 
 
 class CreateTelegramUseCase:
@@ -34,7 +34,7 @@ class CreateTelegramUseCase:
             The created entity DTO.
         """
         # TODO: Add business rules, validation, and side effects
-        from telegram.domain.entities import Telegram
+        from modules.telegram.domain.entities import Telegram
 
         entity = Telegram(name=dto.name, description=dto.description)
         saved = await self._repository.save(entity)

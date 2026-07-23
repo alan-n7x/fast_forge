@@ -4,7 +4,7 @@ Router for telegram module.
 
 from fastapi import APIRouter
 
-from telegram.presentation.schemas import HealthResponse
+from modules.telegram.presentation.schemas import HealthResponse
 
 router = APIRouter(prefix="/telegram", tags=["telegram"])
 

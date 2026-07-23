@@ -3,7 +3,7 @@ Pydantic schemas for telegram module.
 """
 
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 

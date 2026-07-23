@@ -6,6 +6,8 @@ import shutil
 import sys
 from pathlib import Path
 
+from forge.generator import normalize_module_name, resolve_module_path
+
 
 def execute(args: list[str]) -> None:
     """
@@ -25,8 +27,12 @@ def execute(args: list[str]) -> None:
         print("  python manage.py removemodule telegram")
         sys.exit(1)
 
-    module_name = args[0].lower().replace(" ", "_").replace("-", "_")
-    module_path = Path("src/modules") / module_name
+    module_name = normalize_module_name(args[0])
+    try:
+        module_path = resolve_module_path(module_name, "src/modules")
+    except ValueError as exc:
+        print(f"Error: {exc}")
+        sys.exit(1)
 
     if not module_path.exists():
         print(f"Error: module '{module_name}' not found at {module_path}")
@@ -38,13 +44,13 @@ def execute(args: list[str]) -> None:
         return
 
     shutil.rmtree(module_path)
-    _unregister_module(module_name)
+    _unregister_module(module_name, module_path.parent)
     print(f"Module '{module_name}' removed.")
 
 
-def _unregister_module(module_name: str) -> None:
+def _unregister_module(module_name: str, target_dir: str | Path = "src/modules") -> None:
     """Remove router import and registration from src/modules/__init__.py."""
-    modules_init = Path("src/modules/__init__.py")
+    modules_init = Path(target_dir) / "__init__.py"
     if not modules_init.exists():
         return
 
@@ -53,8 +59,7 @@ def _unregister_module(module_name: str) -> None:
     filtered = [
         line
         for line in lines
-        if f".{module_name}." not in line
-        and f"include_router({module_name}_router)" not in line
+        if f".{module_name}." not in line and f"include_router({module_name}_router)" not in line
     ]
 
     modules_init.write_text("".join(filtered), encoding="utf-8")

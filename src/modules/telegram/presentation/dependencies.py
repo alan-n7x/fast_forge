@@ -6,7 +6,7 @@ from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from telegram.infrastructure.repositories.fake_repository import (
+    from modules.telegram.infrastructure.repositories.fake_repository import (
         FakeTelegramRepository,
     )
 
@@ -19,7 +19,7 @@ async def get_repository() -> AsyncGenerator["FakeTelegramRepository", None]:
         A repository instance scoped to the request.
     """
     # TODO: Replace with actual repository implementation (e.g., SQLAlchemy)
-    from telegram.infrastructure.repositories.fake_repository import (
+    from modules.telegram.infrastructure.repositories.fake_repository import (
         FakeTelegramRepository,
     )
 
