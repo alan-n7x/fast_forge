@@ -1,6 +1,4 @@
-"""
-Tests for the {module_name} router.
-"""
+"""Tests for the {module_name} router."""
 
 from collections.abc import AsyncGenerator
 

@@ -1,13 +1,10 @@
-"""
-Infrastructure settings for telegram module.
-"""
+"""Infrastructure settings for telegram module."""
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class TelegramSettings(BaseSettings):
-    """
-    Configuration settings for the telegram module.
+    """Configuration settings for the telegram module.
 
     Reads from environment variables, .env files, or defaults.
     """

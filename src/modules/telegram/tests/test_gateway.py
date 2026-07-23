@@ -1,6 +1,4 @@
-"""
-Tests for the telegram gateway.
-"""
+"""Tests for the telegram gateway."""
 
 # TODO: Implement gateway tests
 # @pytest.mark.asyncio

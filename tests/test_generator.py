@@ -1,3 +1,5 @@
+"""Test module name validation and filesystem generation."""
+
 from pathlib import Path
 
 import pytest
@@ -5,11 +7,13 @@ from forge.generator import create_module, plan_module, resolve_module_path, to_
 
 
 def test_to_pascal_case() -> None:
+    """Verify conversion from supported module names to PascalCase."""
     assert to_pascal_case("order_items") == "OrderItems"
     assert to_pascal_case("order-items") == "OrderItems"
 
 
 def test_create_module_generates_structure_and_registration(tmp_path: Path) -> None:
+    """Verify that generation creates the expected module and registration."""
     target_dir = tmp_path / "src" / "modules"
 
     module_path = create_module("order-items", target_dir)
@@ -29,6 +33,7 @@ def test_create_module_generates_structure_and_registration(tmp_path: Path) -> N
 
 
 def test_create_module_rejects_duplicate(tmp_path: Path) -> None:
+    """Verify that generation does not overwrite an existing module."""
     target_dir = tmp_path / "modules"
     create_module("orders", target_dir)
 
@@ -37,6 +42,7 @@ def test_create_module_rejects_duplicate(tmp_path: Path) -> None:
 
 
 def test_plan_module_validates_without_creating_files(tmp_path: Path) -> None:
+    """Verify that planning resolves a target without writing files."""
     target_dir = tmp_path / "src" / "modules"
 
     module_path = plan_module("order-items", target_dir)
@@ -47,6 +53,7 @@ def test_plan_module_validates_without_creating_files(tmp_path: Path) -> None:
 
 @pytest.mark.parametrize("module_name", ["", "..", "../outside", "class", "orders/items"])
 def test_module_path_rejects_unsafe_names(tmp_path: Path, module_name: str) -> None:
+    """Verify that unsafe module names cannot resolve to target paths."""
     target_dir = tmp_path / "src" / "modules"
 
     with pytest.raises(ValueError):

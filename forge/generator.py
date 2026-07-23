@@ -1,6 +1,4 @@
-"""
-Module generator — scaffolds Clean Architecture modules for FastAPI.
-"""
+"""Module generator — scaffolds Clean Architecture modules for FastAPI."""
 
 import keyword
 from pathlib import Path
@@ -38,8 +36,7 @@ def to_pascal_case(name: str) -> str:
 
 
 def create_module(module_name: str, target_dir: str | Path = "src/modules") -> Path:
-    """
-    Generate a full Clean Architecture module.
+    """Generate a full Clean Architecture module.
 
     Args:
         module_name: Name of the module (e.g., "telegram", "offers").
@@ -50,6 +47,7 @@ def create_module(module_name: str, target_dir: str | Path = "src/modules") -> P
 
     Raises:
         FileExistsError: If the module directory already exists.
+
     """
     module_name = validate_module_name(module_name)
     module_path = plan_module(module_name, target_dir)
@@ -86,12 +84,12 @@ def _create_structure(base_path: Path, context: dict[str, Any]) -> None:
         ("__init__.py", "module/__init__.py.tpl"),
         ("README.md", "module/README.md.tpl"),
         # Presentation layer
-        ("presentation/__init__.py", None),
+        ("presentation/__init__.py", "module/presentation/__init__.py.tpl"),
         ("presentation/router.py", "module/presentation/router.py.tpl"),
         ("presentation/schemas.py", "module/presentation/schemas.py.tpl"),
         ("presentation/dependencies.py", "module/presentation/dependencies.py.tpl"),
         # Application layer
-        ("application/__init__.py", None),
+        ("application/__init__.py", "module/application/__init__.py.tpl"),
         ("application/dto.py", "module/application/dto.py.tpl"),
         ("application/services.py", "module/application/services.py.tpl"),
         (
@@ -103,26 +101,32 @@ def _create_structure(base_path: Path, context: dict[str, Any]) -> None:
             "module/application/use_cases/create_use_case.py.tpl",
         ),
         # Domain layer
-        ("domain/__init__.py", None),
+        ("domain/__init__.py", "module/domain/__init__.py.tpl"),
         ("domain/entities.py", "module/domain/entities.py.tpl"),
         ("domain/repository.py", "module/domain/repository.py.tpl"),
         ("domain/exceptions.py", "module/domain/exceptions.py.tpl"),
         ("domain/value_objects.py", "module/domain/value_objects.py.tpl"),
         # Infrastructure layer
-        ("infrastructure/__init__.py", None),
+        ("infrastructure/__init__.py", "module/infrastructure/__init__.py.tpl"),
         ("infrastructure/settings.py", "module/infrastructure/settings.py.tpl"),
-        ("infrastructure/repositories/__init__.py", None),
+        (
+            "infrastructure/repositories/__init__.py",
+            "module/infrastructure/repositories/__init__.py.tpl",
+        ),
         (
             "infrastructure/repositories/fake_repository.py",
             "module/infrastructure/repositories/fake_repository.py.tpl",
         ),
-        ("infrastructure/gateways/__init__.py", None),
+        (
+            "infrastructure/gateways/__init__.py",
+            "module/infrastructure/gateways/__init__.py.tpl",
+        ),
         (
             "infrastructure/gateways/httpx_gateway.py",
             "module/infrastructure/gateways/httpx_gateway.py.tpl",
         ),
         # Tests
-        ("tests/__init__.py", None),
+        ("tests/__init__.py", "module/tests/__init__.py.tpl"),
         ("tests/test_router.py", "module/tests/test_router.py.tpl"),
         ("tests/test_use_cases.py", "module/tests/test_use_cases.py.tpl"),
         ("tests/test_gateway.py", "module/tests/test_gateway.py.tpl"),
@@ -132,12 +136,11 @@ def _create_structure(base_path: Path, context: dict[str, Any]) -> None:
         file_path = base_path / relative_path
         file_path.parent.mkdir(parents=True, exist_ok=True)
         content = render_template(template_name, context) if template_name else ""
-        file_path.write_text(content, encoding="utf-8")
+        file_path.write_text(content, encoding="utf-8", newline="\n")
 
 
 def _register_module(module_name: str, target_dir: str | Path) -> None:
-    """
-    Auto-register the module's router in the project's main router.
+    """Auto-register the module's router in the project's main router.
 
     Creates or updates src/modules/__init__.py to include the new
     module's router so it's automatically discovered by FastAPI.
@@ -151,6 +154,7 @@ def _register_module(module_name: str, target_dir: str | Path) -> None:
             "from fastapi import APIRouter\n\n\n"
             "main_router = APIRouter()\n",
             encoding="utf-8",
+            newline="\n",
         )
 
     content = modules_init.read_text(encoding="utf-8")
@@ -175,4 +179,4 @@ def _register_module(module_name: str, target_dir: str | Path) -> None:
         if include_line not in content:
             lines.append(include_line)
 
-        modules_init.write_text("".join(lines), encoding="utf-8")
+        modules_init.write_text("".join(lines), encoding="utf-8", newline="\n")

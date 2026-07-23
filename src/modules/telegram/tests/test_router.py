@@ -1,6 +1,4 @@
-"""
-Tests for the telegram router.
-"""
+"""Tests for the telegram router."""
 
 from collections.abc import AsyncGenerator
 

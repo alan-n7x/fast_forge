@@ -1,3 +1,1 @@
-"""
-{module_name} module.
-"""
+"""{module_name} module."""

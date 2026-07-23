@@ -1,13 +1,10 @@
-"""
-Infrastructure settings for {module_name} module.
-"""
+"""Infrastructure settings for {module_name} module."""
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class {entity_name}Settings(BaseSettings):
-    """
-    Configuration settings for the {module_name} module.
+    """Configuration settings for the {module_name} module.
 
     Reads from environment variables, .env files, or defaults.
     """

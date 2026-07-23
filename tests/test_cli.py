@@ -1,3 +1,5 @@
+"""Test the FastForge command-line dispatcher."""
+
 import sys
 from pathlib import Path
 
@@ -9,6 +11,7 @@ def test_cli_without_arguments_shows_help(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    """Verify that invoking the CLI without arguments displays help."""
     monkeypatch.setattr(sys, "argv", ["forge"])
 
     main()
@@ -23,6 +26,7 @@ def test_cli_rejects_unknown_command(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    """Verify that the CLI rejects commands that are not registered."""
     monkeypatch.setattr(sys, "argv", ["forge", "unknown"])
 
     with pytest.raises(SystemExit) as exc_info:
@@ -37,6 +41,7 @@ def test_cli_startmodule_generates_module(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    """Verify that startmodule creates a normalized module directory."""
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sys, "argv", ["forge", "startmodule", "order-items"])
 
@@ -51,6 +56,7 @@ def test_cli_startmodule_rejects_unsafe_name(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    """Verify that startmodule rejects a path traversal attempt."""
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(sys, "argv", ["forge", "startmodule", ".."])
 
@@ -67,6 +73,7 @@ def test_cli_startmodule_dry_run_does_not_create_files(
     monkeypatch: pytest.MonkeyPatch,
     capsys: pytest.CaptureFixture[str],
 ) -> None:
+    """Verify that startmodule dry-run leaves the filesystem unchanged."""
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(
         sys,

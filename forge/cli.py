@@ -1,5 +1,4 @@
-"""
-CLI entry point for fast_forge.
+"""CLI entry point for fast_forge.
 
 Usage:
     python manage.py startmodule <module_name>
@@ -17,7 +16,7 @@ COMMANDS = {
 
 
 def main() -> None:
-    """Main CLI dispatcher."""
+    """Dispatch the requested FastForge command."""
     args = sys.argv[1:]
 
     if not args:

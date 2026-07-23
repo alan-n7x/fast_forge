@@ -1,37 +1,34 @@
-"""
-Use case: telegram create_telegram.
-"""
+"""Use case: telegram create_telegram."""
 
 from modules.telegram.application.dto import CreateTelegramDTO, TelegramDTO
 from modules.telegram.domain.repository import ITelegramRepository
 
 
 class CreateTelegramUseCase:
-    """
-    Create a new Telegram.
+    """Create a new Telegram.
 
     This use case encapsulates the business logic for creating
     a Telegram entity, including validation and side effects.
     """
 
     def __init__(self, repository: ITelegramRepository) -> None:
-        """
-        Initialize the use case.
+        """Initialize the use case.
 
         Args:
             repository: Domain repository implementation.
+
         """
         self._repository = repository
 
     async def execute(self, dto: CreateTelegramDTO) -> TelegramDTO:
-        """
-        Execute the use case.
+        """Execute the use case.
 
         Args:
             dto: Input data for creation.
 
         Returns:
             The created entity DTO.
+
         """
         # TODO: Add business rules, validation, and side effects
         from modules.telegram.domain.entities import Telegram

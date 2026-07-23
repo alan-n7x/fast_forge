@@ -1,6 +1,4 @@
-"""
-HTTP gateway for {module_name} module.
-"""
+"""HTTP gateway for {module_name} module."""
 
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -10,19 +8,18 @@ import httpx
 
 
 class {entity_name}Gateway:
-    """
-    Gateway for external HTTP APIs related to {module_name}.
+    """Gateway for external HTTP APIs related to {module_name}.
 
     Uses httpx.AsyncClient for async HTTP communication.
     """
 
     def __init__(self, base_url: str, api_key: str | None = None) -> None:
-        """
-        Initialize the gateway.
+        """Initialize the gateway.
 
         Args:
             base_url: Base URL for the external API.
             api_key: Optional API key for authentication.
+
         """
         self._base_url = base_url.rstrip("/")
         self._api_key = api_key
@@ -37,8 +34,7 @@ class {entity_name}Gateway:
             yield client
 
     async def fetch_data(self, endpoint: str) -> dict[str, Any]:
-        """
-        Fetch data from an external endpoint.
+        """Fetch data from an external endpoint.
 
         Args:
             endpoint: API path (e.g., "/v1/resource").
@@ -48,6 +44,7 @@ class {entity_name}Gateway:
 
         Raises:
             httpx.HTTPError: On network or HTTP errors.
+
         """
         # TODO: Implement actual data fetching logic
         async with self._client() as client:

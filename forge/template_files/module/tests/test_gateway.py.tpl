@@ -1,6 +1,4 @@
-"""
-Tests for the {module_name} gateway.
-"""
+"""Tests for the {module_name} gateway."""
 
 # TODO: Implement gateway tests
 # @pytest.mark.asyncio

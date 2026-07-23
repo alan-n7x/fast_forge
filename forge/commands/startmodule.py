@@ -1,6 +1,4 @@
-"""
-Command: startmodule — generates a new Clean Architecture module.
-"""
+"""Command: startmodule — generates a new Clean Architecture module."""
 
 import argparse
 
@@ -22,8 +20,7 @@ def _parser() -> argparse.ArgumentParser:
 
 
 def execute(args: list[str]) -> None:
-    """
-    Run the startmodule command.
+    """Run the startmodule command.
 
     Usage: python manage.py startmodule <module_name> [--dry-run]
     """

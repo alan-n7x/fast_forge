@@ -1,14 +1,11 @@
-"""
-Value objects for telegram module.
-"""
+"""Value objects for telegram module."""
 
 from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
 class TelegramStatus:
-    """
-    Immutable value object representing a Telegram status.
+    """Immutable value object representing a Telegram status.
 
     Value objects are defined by their attributes and have no identity.
     They should be immutable.

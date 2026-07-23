@@ -1,6 +1,4 @@
-"""
-Tests for the telegram use cases.
-"""
+"""Tests for the telegram use cases."""
 
 import pytest
 

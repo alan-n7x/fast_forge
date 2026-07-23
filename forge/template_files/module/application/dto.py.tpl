@@ -1,6 +1,4 @@
-"""
-Data transfer objects for {module_name} module.
-"""
+"""Data transfer objects for {module_name} module."""
 
 from dataclasses import dataclass, field
 from uuid import UUID, uuid4
